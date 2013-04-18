@@ -96,9 +96,9 @@
 %
 % \pgfkeys{
 %   /my package/.cd,
+%   style/.initial = {color=red,align=center},
 %   % ...
-%   style = {color=red,align=center},
-%   .also/.expanded = \usefield{style},
+%   .also/.expanded = \pgfkeysusevalue{/my package/style},
 % }
 %
 \pgfkeys{/handlers/.also/.code=\pgfkeysalso{#1}}
@@ -155,8 +155,8 @@
 %
 %   \pgfkeys{my package,align=right,format=bold}
 %
-% which causes the selected options to remebered but \emph{not} executed. Only when
-% explicitly requesting so by explcitly evaluating
+% which causes the selected options to remebered but \emph{not} executed. Only later,
+% when requesting it by explcitly evaluating
 %
 %   \pgfkeys{my package,align/.eval,/format/.eval=Hello}
 %
@@ -196,7 +196,8 @@
 % make toggles depend on other toggles.
 %
 %   \pgfkeys{
-%     /my package/.cd,
+%     my package/.is family,
+%     my package,
 %     numbered/.is toggle,
 %     in toc/.is toggle,
 %     in toc/if numbered/.code = \pgfkeysiftoggle{/my package/numbered}
@@ -204,7 +205,8 @@
 %
 % Options are selected as usual
 %
-%   \pgfqkeys{/my package}{
+%   \pgfkeys{
+%     my package,
 %     numbered = true,
 %     in toc = if numbered   % will be true or false depending on `numbered`
 %   }
