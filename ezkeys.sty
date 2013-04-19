@@ -231,8 +231,8 @@
 % Makes `<key>` behave as a boolean option. That is, it takes values true or false, with
 % true being the default value, but set to false by default. Unlike `.is if`, you don't
 % need to supply a TeX-if name, since the key itself is used to store the current
-% selected value of the toggle. This is more flexible and convenient, as you can also
-% make toggles depend on other toggles.
+% selected value as an etoolbox toggle. This is more flexible and convenient, as you
+% can also make toggles that depend on other toggles.
 %
 %   \pgfkeys{
 %     my package/.is family,
@@ -252,8 +252,8 @@
 %
 % And then you one can write conditionals such as
 %
-%   \pgfkeysiftoggle{/my package/numbered}{numbered is true}{numbered is false}
-%   \pgfkeysiftoggle{/my package/in toc}{in toc is true}{in toc is false}
+%   \iftoggle{/my package/numbered}{numbered is true}{numbered is false}
+%   \iftoggle{/my package/in toc}{in toc is true}{in toc is false}
 %
 \pgfkeys{/handlers/.is toggle/.code=%
   \edef\ez@togglename{\pgfkeyscurrentpath}%
