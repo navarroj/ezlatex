@@ -1,13 +1,44 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{ezkeys}[2013/04/18 Add-ons for even easier and more powerful pgfkeys]
 
+\RequirePackage{pgffor,pgfkeys}
 \RequirePackage{etoolbox}
-\RequirePackage{pgfkeys}
 
-% Low level extensions
-% ====================
+% Toggle extensions
+% =================
 %
-% The following are extensions to the low-level key handling mechanism of pgfkeys.
+% Extensions to the etoolbox's toggle mechanism
+
+% \iftoggletrue{<always>}{<never>}
+% \iftogglefalse{<never>}{<always>}
+%
+% Respectively, true/false constant toggle-tests that always expand to the first/second
+% argument.
+%
+\newcommand\iftoggletrue{}  \let\iftoggletrue\@firstoftwo
+\newcommand\iftogglefalse{} \let\iftogglefalse\@secondoftwo
+
+% \deftoggle{<toggle>}{\test}
+%
+% Instead of having a fixed value, whenever the `<toggle>` is evaluated, its value
+% is determined by evaluating the given `\test` instead.
+%
+\newrobustcmd*{\deftoggle}[2]{%
+  \ifcsdef{etb@tgl@#1}
+    {\csdef{etb@tgl@#1}{#2}}
+    {\etb@noglobal\etb@err@notoggle{#1}}}
+
+% \linktoggle{<toggle>}{<linked-toggle>}
+%
+% Instead of having a fixed value, whenever the `<toggle>` is evaluated, its value
+% is determined by evaluating the `<linked-toggle>` instead.
+%
+\newcommand*{\linktoggle}[2]{\deftoggle{#1}{\iftoggle{#2}}}
+
+% Low level pgfkeys extensions
+% ============================
+%
+% Extensions to the low-level key handling mechanism of pgfkeys.
 
 % \pgfkeysrequire{<full-key>}
 %
@@ -29,6 +60,19 @@
 % if the key is not currently storing a value.
 %
 \newcommand*\pgfkeysifempty[1]{\pgfkeysrequire{#1}\ifcsempty{pgfk@#1}}
+
+% \pgfkeysprovidevalue{<full-key>}{<value>}
+%
+% If <full-key> is currently storing an empty value, this is replaced with <value>;
+% otherwise the current value is left unchanged. The key must be already defined.
+%
+\newcommand*\pgfkeysprovidevalue[2]{\pgfkeysifempty{#1}{\pgfkeyssetvalue{#1}{#2}}{}}
+
+% \pgfkeysifhascode{<full-key>}{<true>}{<false>}
+%
+% Tests whether `<full-key>/.code` has been set.
+%
+\newcommand*\pgfkeysifhascode[1]{\pgfkeysifdefined{#1/.@cmd}}
 
 % \pgfkeysusecode{<full-key>}{<args>}
 %
@@ -58,19 +102,6 @@
 %
 \newcommand*\pgfkeysusecode[2]{\pgfkeysusevalue{#1/.@cmd}#2\pgfeov}
 
-% \pgfkeysiftoggle{<full-key>}{<true>}{<false>}
-%
-% Assumes that `<full-key>` is a toggle (see the `.is toggle` handler bellow) and,
-% depending on the result of evaluating the toggle, expands to either the <true> or 
-% the <false> branch.
-%
-% An error is raised if no code for evaluation is defined, but no further checks are
-% done to verify that the code indeed holds a valid toggle test.
-%
-\newcommand*\pgfkeysiftoggle[1]{\pgfkeysusecode{#1/.eval}{}}
-\newcommand\iftoggletrue{}  \let\iftoggletrue\@firstoftwo
-\newcommand\iftogglefalse{} \let\iftogglefalse\@secondoftwo
-
 % Key handlers
 % ============
 %
@@ -87,7 +118,7 @@
 % Is in effect equivalent to just `<key>=<value>`. Useful to set a value
 % on the current default path (i.e. without explicitly giving a key).
 %
-\pgfkeys{/handlers/.set/.code=\pgfkeysalso{\pgfkeyscurrentpath=#1}}
+\pgfkeys{/handlers/.set/.code=\pgfkeysalso{\pgfkeyscurrentpath={#1}}}
 
 % Key handler `<key>/.also=<key-values>`
 %
@@ -102,6 +133,14 @@
 % }
 %
 \pgfkeys{/handlers/.also/.code=\pgfkeysalso{#1}}
+\pgfkeys{/handlers/.ealso/.code=\pgfkeysalso{.also/.expanded={#1}}}
+
+% Key handler `<key>/.provide value=<value>`
+%
+% If <key> is currently storing an empty value, this is replaced with <value>;
+% otherwise the current value is left unchanged. The key must be already defined.
+%
+\pgfkeys{/handlers/.provide value/.code=\pgfkeysprovidevalue{\pgfkeyscurrentpath}{#1}}
 
 % Key handler `<key>/.append list=<value>`
 %
@@ -200,7 +239,7 @@
 %     my package,
 %     numbered/.is toggle,
 %     in toc/.is toggle,
-%     in toc/if numbered/.code = \pgfkeysiftoggle{/my package/numbered}
+%     in toc/if numbered/.code = \linktoggle{/my package/in toc}{/my package/numbered},
 %   }
 %
 % Options are selected as usual
@@ -217,12 +256,16 @@
 %   \pgfkeysiftoggle{/my package/in toc}{in toc is true}{in toc is false}
 %
 \pgfkeys{/handlers/.is toggle/.code=%
+  \edef\ez@togglename{\pgfkeyscurrentpath}%
+  \newtoggle{\ez@togglename}%
   \pgfkeys{
     \pgfkeyscurrentpath/.cd,
-    .is code choice,
-    true/.code  = \iftoggletrue,
-    false/.code = \iftogglefalse,
-    .default    = true,
-    .set        = false}}
+    .is choice,
+    true/.ecode  = \noexpand\toggletrue{\ez@togglename},
+    false/.ecode = \noexpand\togglefalse{\ez@togglename},
+    .default    = true}}
+
+\pgfkeys{/handlers/.add toggle/.code=\pgfkeys{\pgfkeyscurrentpath/#1/.is toggle}}
+\pgfkeys{/handlers/.add toggles/.code=\pgfkeys{\pgfkeyscurrentpath/.add toggle/.list={#1}}}
 
 \endinput
