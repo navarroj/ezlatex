@@ -9,14 +9,14 @@
 %
 % Extensions to the etoolbox's toggle mechanism
 
-% \iftoggletrue{<always>}{<never>}
-% \iftogglefalse{<never>}{<always>}
+% \iftesttrue{<always>}{<never>}
+% \iftestfalse{<never>}{<always>}
 %
-% Respectively, true/false constant toggle-tests that always expand to the first/second
+% Respectively, true/false constant tests that always expand to the first/second
 % argument.
 %
-\newcommand\iftoggletrue{}  \let\iftoggletrue\@firstoftwo
-\newcommand\iftogglefalse{} \let\iftogglefalse\@secondoftwo
+\newcommand\iftesttrue{}  \let\iftoggletrue\@firstoftwo
+\newcommand\iftestfalse{} \let\iftogglefalse\@secondoftwo
 
 % \deftoggle{<toggle>}{\test}
 %
