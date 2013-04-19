@@ -257,7 +257,7 @@
 %
 \pgfkeys{/handlers/.is toggle/.code=%
   \edef\ez@togglename{\pgfkeyscurrentpath}%
-  \newtoggle{\ez@togglename}%
+  \providetoggle{\ez@togglename}%
   \pgfkeys{
     \pgfkeyscurrentpath/.cd,
     .is choice,
