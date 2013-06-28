@@ -1,0 +1,36 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ezcode}[2013/06/18 Simple environment for typesetting indented code]
+
+% global configuration
+\newcounter{ezcodelevel}
+\newcounter{ezcodeline}
+\newlength{\ezcodeindent}\setlength{\ezcodeindent}{1em}
+\newlength{\ezcodemargin}\setlength{\ezcodemargin}{\parindent}
+\newcommand{\ezcodelabelformat}[1]{\small\itshape#1}
+\newcommand{\ezcodelabelsep}{1.5ex}
+\newcommand{\ezcodelabel}{}
+\newcommand\keyword[1]{\textbf{#1}}
+
+% the \ez@keywords command enables the use of |...| as a shorthand
+% for \keyword{...} within the current group.
+\def\ez@activevert{\catcode`|=\active}
+{\ez@activevert\gdef\ez@keywords{\ez@activevert\def|##1|{\keyword{##1}}}}
+
+\newenvironment{ezcode}{%
+  \par\medskip\begingroup\parskip=2pt\relax%
+  \parindent=\ezcodemargin\relax%
+  \setcounter{ezcodelevel}{0}%
+  \setcounter{ezcodeline}{0}%
+  \everypar={\llap{\ezcodelabelformat{\ezcodelabel}\hspace{\ezcodelabelsep}}%
+             \hspace{\value{ezcodelevel}\ezcodeindent}}%
+  \def\[{\stepcounter{ezcodelevel}\begingroup}%
+  \def\]{\endgroup\addtocounter{ezcodelevel}{-1}}%
+  \let\ez@lbrace\{\def\{{\ez@lbrace\[}%
+  \let\ez@rbrace\}\def\}{\]\ez@rbrace}%
+  \def\startlinenumbers{\def\ezcodelabel{\refstepcounter{ezcodeline}\arabic{ezcodeline}:}}%
+  \def\stoplinenumbers{\def\ezcodelabel{}}%
+  \ez@keywords%
+  \medskip\obeylines%
+}{\par\endgroup\medskip}
+
+\endinput
