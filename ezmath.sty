@@ -1,0 +1,73 @@
+%% ezmath.sty
+%%
+%% Crated and mantained by Juan A. Navarro, juan@navarroj.com
+%% http://navarroj.com/latex
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ezmath}[2013/05/07 Easier math symbols and constructions]
+\RequirePackage{etoolbox}
+\RequirePackage{mathtools}
+\RequirePackage{amssymb}
+
+% = Math symbols =
+
+% == Ordinary symbols ==
+\newcommand{\RR}{\mathbb{R}}                   % real numbers
+\newcommand{\QQ}{\mathbb{Q}}                   % rational numbers
+\newcommand{\NN}{\mathbb{N}}                   % natural numbers
+\newcommand{\ZZ}{\mathbb{Z}}                   % integer numbers
+\newcommand{\CC}{\mathbb{C}}                   % complex numbers
+\newcommand{\BB}{\mathbb{B}}                   % boolean numbers
+
+% == Other symbols ==
+\newcommand\qdot{.\;}                          % dot after a quantifier
+
+% == Named math operators ==
+\DeclareMathOperator{\dom}{dom}
+
+% == Binary operators ==
+\newcommand{\lthen}{\mathbin{\rightarrow}}     % implies
+\newcommand{\liff}{\mathbin{\leftrightarrow}}  % if and only if
+\newcommand{\lif}{\mathbin{\leftarrow}}        % implied by
+
+% == Binary relations ==
+\newcommand{\assign}{\mathrel{:\Relbar}}       % declarative assignment
+\newcommand{\proves}{\vdash}                   % proves relation
+\newcommand{\defas}{\stackrel{\text{def}}{=}}  % "defined as" relation
+\newcommand{\mayto}{\rightharpoonup}           % partial mapping
+
+% == Variable-sized operators ==
+\newcommand{\bigland}{\bigwedge}               % big conjunction
+\newcommand{\biglor}{\bigvee}                  % big disjunction
+
+% == Paired delimiters ==
+\DeclarePairedDelimiter{\set}{\lbrace}{\rbrace}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+% == Repeated sequences ==
+
+\newcommand\csnewcommand[1]{\expandafter\newcommand\csname#1\endcsname}
+
+\newcommand{\ez@ith}[2]{{\def\i{{#2}}#1}}
+\newcommand{\ez@makesequence}[5]{\ez@ith{#4}{#3}#2#1#2\ez@ith{#4}{#5}}
+
+% #1 - dots, #2 - command, #3 - comma
+\newcommand\DeclareSequence[3][\dots]{%
+  % ##1 - 1, ##2 - x, ##3 - n
+  \csnewcommand{\string#2@star}[3][1]{\ez@makesequence{#1}{#3}{##1}{##2}{##3}}%
+  \csnewcommand{\string#2@plain}[3][1]{\ez@makesequence{#1}{#3}{##1}{##2_\i}{##3}}%
+  \newcommand#2{\@ifstar{\csuse{\string#2@star}}{\csuse{\string#2@plain}}}%
+}
+
+\DeclareSequence{\seqof}{,}
+\DeclareSequence{\sumof}{+}
+\DeclareSequence{\prodof}{\times}
+\DeclareSequence{\conjof}{\land}
+\DeclareSequence{\disjof}{\lor}
+\DeclareSequence{\unionof}{\cup}
+\DeclareSequence{\disjunionof}{\uplus}
+\DeclareSequence{\sepof}{\ast}
+
+\endinput
+
+% end of ezmath.sty file
