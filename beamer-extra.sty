@@ -1,0 +1,19 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamer-extra}[2013/08/22 Some extra beamer features]
+\RequirePackage{etoolbox}
+
+% A command to set default frame options:
+%   \defaultframeoptions{<options>}  % append some more defaults options
+%   \defaultframeoptions*{<options>} % clear past defaults, set some new
+\def\beamer@extra@frameoptions{}
+\def\beamer@extra@setframeoptions#1%
+  {\appto\beamer@extra@frameoptions{\setkeys{beamerframe}{#1}}}
+\def\defaultframeoptions{\@ifstar
+  {\def\beamer@extra@frameoptions{}\beamer@extra@setframeoptions}
+  {\beamer@extra@setframeoptions}}
+\define@key{beamerframe}{environment}%
+  {\def\beamer@frameenvironmentsubst{#1}\beamer@extra@frameoptions}
+
+% A new frame option for wider items
+\define@key{beamerframe}{wide}[30pt]{%
+  \def\beamer@cramped{\itemsep #1\topsep0.5pt\relax}}
