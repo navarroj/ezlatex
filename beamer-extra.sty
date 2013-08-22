@@ -14,6 +14,7 @@
 \define@key{beamerframe}{environment}%
   {\def\beamer@frameenvironmentsubst{#1}\beamer@extra@frameoptions}
 
-% A new frame option for wider items
-\define@key{beamerframe}{wide}[30pt]{%
-  \def\beamer@cramped{\itemsep #1\topsep0.5pt\relax}}
+% A new frame option for spacier paragraphs and items
+\define@key{beamerframe}{wide}[20pt]{%
+  \def\beamer@cramped{\itemsep #1\topsep0.5pt\relax}
+  \parskip #1\relax}
