@@ -2,7 +2,7 @@
 \ProvidesPackage{beamer-extra}[2013/08/22 Some extra beamer features]
 \RequirePackage{etoolbox}
 
-% A command to set default frame options:
+% A command to collect default frame options:
 %   \defaultframeoptions{<options>}  % append some more defaults options
 %   \defaultframeoptions*{<options>} % clear past defaults, set some new
 \def\beamer@extra@frameoptions{}
@@ -11,10 +11,34 @@
 \def\defaultframeoptions{\@ifstar
   {\def\beamer@extra@frameoptions{}\beamer@extra@setframeoptions}
   {\beamer@extra@setframeoptions}}
+
+% hook into frame options  
 \define@key{beamerframe}{environment}%
   {\def\beamer@frameenvironmentsubst{#1}\beamer@extra@frameoptions}
 
-% A new frame option for spacier paragraphs and items
+% A command to collect default column options:
+%   \defaultcolumnoptions{<options>}  % append some more defaults options
+%   \defaultcolumnoptions*{<options>} % clear past defaults, set some new
+\def\beamer@extra@columnoptions{}
+\def\beamer@extra@setcolumnoptions#1%
+  {\appto\beamer@extra@columnoptions{\setkeys{beamer@col}{#1}}}
+\def\defaultcolumnoptions{\@ifstar
+  {\def\beamer@extra@columnoptions{}\beamer@extra@setcolumnoptions}
+  {\beamer@extra@setcolumnoptions}}
+
+% hook into column options
+\preto\column{\preto\beamer@colmode{default}}
+\define@key{beamer@col}{default}[true]{\beamer@extra@columnoptions}
+\define@key{beamer@col}{defaultc}[true]{\setkeys{beamer@col}{c,default}}
+\define@key{beamer@col}{defaultt}[true]{\setkeys{beamer@col}{t,default}}
+\define@key{beamer@col}{defaultT}[true]{\setkeys{beamer@col}{T,default}}
+\define@key{beamer@col}{defaultb}[true]{\setkeys{beamer@col}{b,default}}
+
+% A new option for spacier paragraphs and items in frames and columns
 \define@key{beamerframe}{wide}[20pt]{%
-  \def\beamer@cramped{\itemsep #1\topsep0.5pt\relax}
-  \parskip #1\relax}
+  \def\beamer@cramped{\itemsep=#1\topsep=0.5pt\relax}%
+  \defaultcolumnoptions{wide=#1}%
+  \parskip=#1\relax}
+
+\define@key{beamer@col}{wide}[20pt]%
+  {\appto\beamer@colheadskip{\parskip=#1\relax}}
