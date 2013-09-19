@@ -36,7 +36,7 @@
 
 % A new option for spacier paragraphs and items in frames and columns
 \define@key{beamerframe}{wide}[20pt]{%
-  \def\beamer@cramped{\itemsep=#1\topsep=0.5pt\relax}%
+  \def\beamer@cramped{\parskip=#1\itemsep=0pt\topsep=0.5pt\relax}%
   \defaultcolumnoptions{wide=#1}%
   \parskip=#1\relax}
 
