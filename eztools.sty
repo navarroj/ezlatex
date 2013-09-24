@@ -1,0 +1,15 @@
+%% eztools.sty
+%%
+%% Crated and mantained by Juan A. Navarro, juan@navarroj.com
+%% http://navarroj.com/latex
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{eztools}[2013/09/24 Assorted programming tools]
+\RequirePackage{etoolbox}
+
+\newcommand\Map{\forcsvlist}
+
+\newcommand\JoinMap[4]{%
+  \def\eztools@empty{#1}
+  \def\eztools@comma{\def\eztools@comma{#2}\let\eztools@empty\relax}%
+  \Map{\eztools@comma#3}{#4}\eztools@empty}
