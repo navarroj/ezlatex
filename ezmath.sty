@@ -20,7 +20,9 @@
 \newcommand{\BB}{\mathbb{B}}                   % boolean numbers
 
 % == Other symbols ==
-\newcommand\qdot{.\;}                          % dot after a quantifier
+\newcommand\qdot{.\,}                          % dot after a quantifier
+\newcommand\Forall[1]{\forall #1\qdot}         % \forall x.
+\newcommand\Exists[1]{\exists #1\qdot}         % \exists y.
 
 % == Named math operators ==
 \DeclareMathOperator{\dom}{dom}
@@ -29,11 +31,13 @@
 \newcommand{\lthen}{\mathbin{\rightarrow}}     % implies
 \newcommand{\liff}{\mathbin{\leftrightarrow}}  % if and only if
 \newcommand{\lif}{\mathbin{\leftarrow}}        % implied by
-\newcommand*{\bdiv}{%                          % integer division
+
+\newcommand*{\binarymathoperator}[1]{%
   \nonscript\mskip-\medmuskip\mkern5mu%
-  \mathbin{\operator@font div}\penalty900\mkern5mu%
-  \nonscript\mskip-\medmuskip
-}
+  \mathbin{\operator@font #1}\penalty900\mkern5mu%
+  \nonscript\mskip-\medmuskip}
+
+\newcommand*{\bdiv}{\binarymathoperator{div}}  % integer division
 
 % == Binary relations ==
 \newcommand{\assign}{\mathrel{:\Relbar}}       % declarative assignment
@@ -46,11 +50,21 @@
 \newcommand{\biglor}{\bigvee}                  % big disjunction
 
 % == Paired delimiters ==
-\DeclarePairedDelimiter{\set}{\lbrace}{\rbrace}
-\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\braces}{\lbrace}{\rbrace}
+\DeclarePairedDelimiter{\brackets}{\lbrack}{\rbrack}
+\DeclarePairedDelimiter{\verts}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\angles}{\langle}{\rangle}
+\DeclarePairedDelimiter{\parens}{\lparen}{\rparen}
+
+\newcommand{\set}{\braces}
+\newcommand{\abs}{\verts}
+\newcommand{\tuple}{\angles}
 
 % == Punctuation in displayed math ==
 \newcommand*\mpunct[1]{\mathrlap{\,\text{#1}}}
+
+% == Inference rules ==
+\newcommand\inference[2]{\frac{\displaystyle\;#1\;}{\displaystyle\;#2\;}}
 
 % == Repeated sequences ==
 
