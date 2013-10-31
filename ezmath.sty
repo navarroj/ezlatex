@@ -32,12 +32,15 @@
 \newcommand{\liff}{\mathbin{\leftrightarrow}}  % if and only if
 \newcommand{\lif}{\mathbin{\leftarrow}}        % implied by
 
-\newcommand*{\binarymathoperator}[1]{%
+% == Named binary operators ==
+\newcommand*\binaryoperatorname[1]{%
   \nonscript\mskip-\medmuskip\mkern5mu%
   \mathbin{\operator@font #1}\penalty900\mkern5mu%
   \nonscript\mskip-\medmuskip}
+\newcommand*\DeclareBinaryMathOperator[2]{%
+  \newcommand*#1{\binaryoperatorname{#2}}}
 
-\newcommand*{\bdiv}{\binarymathoperator{div}}  % integer division
+\DeclareBinaryMathOperator{\bdiv}{div}         % integer division
 
 % == Binary relations ==
 \newcommand{\assign}{\mathrel{:\Relbar}}       % declarative assignment
